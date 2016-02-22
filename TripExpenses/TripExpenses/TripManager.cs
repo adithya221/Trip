@@ -4,17 +4,26 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using TripExpenses.Model;
+
 
 namespace TripExpenses
 {
     class TripManager : ITripManager
     {
+        FileTripRepository fileTripRepository = new FileTripRepository();
 
-        private readonly List<Trip> trips = new List<Trip>();
+        private readonly List<Trip> trips;
+
+        public TripManager()
+        {
+            trips = fileTripRepository.LoadTrips();
+        }
+    
 
 
-        private DateTime CaptureDate(string title)
+    private DateTime CaptureDate(string title)
         {
             DateTime capDate;
         datecap:
@@ -56,10 +65,8 @@ namespace TripExpenses
             }
             trips.Add(trip);
 
-            Console.WriteLine("Trip Added Successfully, Your Trip id is: " + trip.Id);
-
-            Console.ReadLine();
-
+            Console.WriteLine("Trip Added Successfully, Your Trip id is: " + trip.Id);           
+            DoYouWantToSave();
         }
 
         /*----------Display Trip----------*/
@@ -139,6 +146,7 @@ namespace TripExpenses
                     AddExpense(trip);
                 }
             }
+            DoYouWantToSave();
         }
 
         /*------------Remmove Trip------------*/
@@ -156,7 +164,7 @@ namespace TripExpenses
 
             }
             trips.Remove(tripToDelete);
-
+            DoYouWantToSave();
         }
 
         /*------------Remmove Expense------------*/
@@ -179,6 +187,7 @@ namespace TripExpenses
                         }
                     }
                     trip.Expenses.Remove(expToDelete);
+                    DoYouWantToSave();
                 }
             }
         }
@@ -193,10 +202,22 @@ namespace TripExpenses
             }
             
         }
+        public void DoYouWantToSave()
+        {
+            Console.WriteLine("Do you Want to Save your Trip? (y/n)");
+            string choice = Console.ReadLine();
+            if(choice.ToLower()=="y")
+            {
+                fileTripRepository.SaveTrips(trips);
+                Console.WriteLine("Saved Successfully");
+            }
+        }
 
         public void AddExpense()
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

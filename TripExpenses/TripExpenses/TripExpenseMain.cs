@@ -13,6 +13,7 @@ namespace TripExpenses
         static void Main(string[] args)
         {
             TripManager tripManager = new TripManager();
+            FileTripRepository fileTripRepository = new FileTripRepository();
 
             Console.Clear();
 
